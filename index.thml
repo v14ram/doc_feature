@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Services Carousel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .carousel-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .carousel-header {
+            background-color: #232f3e;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .carousel-nav {
+            display: flex;
+            justify-content: center;
+            background-color: #e7e7e7;
+            padding: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 8px 16px;
+            margin: 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        
+        .nav-btn:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .nav-btn.active {
+            background-color: #232f3e;
+            color: white;
+        }
+        
+        .carousel-content {
+            padding: 20px;
+        }
+        
+        .category-section {
+            display: none;
+        }
+        
+        .category-section.active {
+            display: block;
+        }
+        
+        .category-title {
+            color: #232f3e;
+            border-bottom: 2px solid #ff9900;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        
+        th {
+            background-color: #232f3e;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            vertical-align: top;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .paid-badge {
+            background-color: #ff9900;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        .service-name {
+            font-weight: bold;
+            color: #232f3e;
+        }
+    </style>
+</head>
+<body>
+    <div class="carousel-container">
+        <div class="carousel-header">
+            <h1>AWS Services Overview</h1>
+            <p>Browse AWS services organized by category</p>
+        </div>
+        
+        <div class="carousel-nav">
+            <button class="nav-btn active" onclick="showCategory('compute')">Compute</button>
+            <button class="nav-btn" onclick="showCategory('storage')">Storage</button>
+            <button class="nav-btn" onclick="showCategory('databases')">Databases</button>
+            <button class="nav-btn" onclick="showCategory('ai')">AI & ML</button>
+            <button class="nav-btn" onclick="showCategory('network')">Network</button>
+            <button class="nav-btn" onclick="showCategory('security')">Security</button>
+            <button class="nav-btn" onclick="showCategory('mgmt')">Management</button>
+            <button class="nav-btn" onclick="showCategory('devtools')">DevTools</button>
+            <button class="nav-btn" onclick="showCategory('analytics')">Analytics</button>
+            <button class="nav-btn" onclick="showCategory('mobile')">Mobile</button>
+            <button class="nav-btn" onclick="showCategory('other')">Other</button>
+        </div>
+        
+        <div class="carousel-content">
+            <!-- Compute Section -->
+            <div id="compute" class="category-section active">
+                <h2 class="category-title">Compute Services</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Service Name</th>
+                            <th>Description</th>
+                            <th>Plan Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="service-name">Amazon EC2</td>
+                            <td>Resizable compute capacity in the Cloud.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Lambda</td>
+                            <td>Run code without thinking about servers or clusters</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Outposts Family</td>
+                            <td>Run AWS infrastructure and services on premises for a truly consistent hybrid experience</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS SimSpace Weaver</td>
+                            <td>Build dynamic, large-scale spatial simulations on AWS managed infrastructure</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Elastic Container Service</td>
+                            <td>Run highly secure, reliable, and scalable containers</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Batch</td>
+                            <td>Batch processing for Machine Learning model training, simulation, and analysis at any scale</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Elastic Load Balancing</td>
+                            <td>Automatic distribution of incoming application traffic across multiple Amazon EC2 instances.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Lightsail</td>
+                            <td>Virtual Private Servers made easy! Everything you need to jumpstart your project on AWS with compute, storage, and networking.</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Elastic Container Registry</td>
+                            <td>Store and retrieve Docker images.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS B2B Data Interchange</td>
+                            <td>Automate the transformation of electronic data interchange (EDI) documents</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Elastic Beanstalk</td>
+                            <td>Easily migrate, deploy, and scale full-stack applications on AWS</td>
+                            <td>Standard</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Storage Section -->
+            <div id="storage" class="category-section">
+                <h2 class="category-title">Storage Services</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Service Name</th>
+                            <th>Description</th>
+                            <th>Plan Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="service-name">Amazon S3</td>
+                            <td>Secure, durable, and scalable object storage infrastructure.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Backup</td>
+                            <td>Centrally manage and automate data protection</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Elastic Disaster Recovery</td>
+                            <td>Scalable, cost-effective application recovery to AWS</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Elastic Block Storage</td>
+                            <td>Persistent, durable, low-latency block-level storage volumes for EC2 instances.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon FSx</td>
+                            <td>Launch, run, and scale feature-rich and highly-performant file systems with just a few clicks</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon EFS</td>
+                            <td>Simple, scalable, shared file storage service for Amazon EC2 instances.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon ECS Anywhere</td>
+                            <td>Easily run and manage containers on any customer-managed infrastructure</td>
+                            <td>Standard</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Databases Section -->
+            <div id="databases" class="category-section">
+                <h2 class="category-title">Database Services</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Service Name</th>
+                            <th>Description</th>
+                            <th>Plan Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="service-name">Amazon RDS</td>
+                            <td>Managed Relational Database Service for MySQL, PostgreSQL, MariaDB, or SQL Server.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon DynamoDB</td>
+                            <td>Serverless, NoSQL, fully managed database with single-digit millisecond performance at any scale.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Aurora DSQL</td>
+                            <td>Fastest serverless distributed SQL database for always available applications</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon ElastiCache</td>
+                            <td>Real-time performance for real-time applications</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon SimpleDB</td>
+                            <td>Amazon SimpleDB is a highly available NoSQL data store that offloads the work of database administration.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon DocumentDB</td>
+                            <td>Amazon DocumentDB is a scalable, highly durable, and fully managed database service for operating mission-critical MongoDB workloads.</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Neptune</td>
+                            <td>High-performance graph analytics and serverless database for superior scalability and availability</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Timestream</td>
+                            <td>Easy-to-manage time-series databases optimized for security, performance, availability, and scalability</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Database Migration Service</td>
+                            <td>Migrate databases with minimal downtime.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Keyspaces</td>
+                            <td>A scalable, highly available, and managed Apache Cassandra–compatible database service</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- AI & ML Section -->
+            <div id="ai" class="category-section">
+                <h2 class="category-title">AI & Machine Learning Services</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Service Name</th>
+                            <th>Description</th>
+                            <th>Plan Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="service-name">Amazon Bedrock</td>
+                            <td>The easiest way to build and scale generative AI applications with foundation models</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon SageMaker AI</td>
+                            <td>Machine learning for every data scientist and developer.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Lex</td>
+                            <td>Build bots with Conversational AI.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Kendra</td>
+                            <td>Intelligent search service powered by machine learning</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Fraud Detector</td>
+                            <td>Detect online fraud faster with machine learning</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon DevOps Guru</td>
+                            <td>ML-powered cloud operations service to improve application availability</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS HealthOmics</td>
+                            <td>Transform genomic, transcriptomic, and other omics data into insights.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Augmented AI</td>
+                            <td>Amazon Augmented AI (Amazon A2I) makes it easy to build the workflows required for human review of ML predictions.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Comprehend Medical</td>
+                            <td>A natural language processing service that makes it easy to use machine learning to extract relevant medical information from unstructured text.</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Lookout for Vision</td>
+                            <td>Spot product defects using computer vision to automate quality inspection</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS HealthScribe</td>
+                            <td>AWS HealthScribe is a HIPAA-eligible service empowering healthcare software vendors to build clinical applications that automatically generate clinical notes by analyzing patient-clinician conversations.</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Rekognition</td>
+                            <td>Deep learning-based image recognition service.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Entity Resolution</td>
+                            <td>Easy-to-configure, Machine Learning-powered entity resolution service</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Comprehend</td>
+                            <td>Continuously trained and fully managed natural language processing (NLP).</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Supply Chain</td>
+                            <td>Mitigate risks and lower costs with an ML-powered supply chain application</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Polly</td>
+                            <td>Turn text into lifelike speech.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Transcribe</td>
+                            <td>Add speech-to-text capability to your applications with automatic speech recognition.</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS HealthLake</td>
+                            <td>Securely store, transform, transact, and analyze health data in minutes</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Textract</td>
+                            <td>Textract automatically extracts text and data from scanned documents, forms, and tables.</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Network Section -->
+            <div id="network" class="category-section">
+                <h2 class="category-title">Network Services</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Service Name</th>
+                            <th>Description</th>
+                            <th>Plan Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="service-name">Amazon Virtual Private Cloud</td>
+                            <td>Define and launch AWS resources in a logically isolated virtual network</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Direct Connect</td>
+                            <td>Create a dedicated network connection to AWS</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Cloud Map</td>
+                            <td>Service discovery for cloud resources</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Route 53</td>
+                            <td>Amazon Route 53 is a highly available and scalable cloud Domain Name System (DNS) web service.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Global Accelerator</td>
+                            <td>Improve application availability, performance, and security using the AWS global network</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon CloudFront</td>
+                            <td>Web service to distribute content to end users with low latency and high transfer speeds.</td>
+                            <td>Standard</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Security Section -->
+            <div id="security" class="category-section">
+                <h2 class="category-title">Security & Identity Services</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Service Name</th>
+                            <th>Description</th>
+                            <th>Plan Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="service-name">AWS IAM Access Analyzer</td>
+                            <td>Streamline your journey toward least privilege</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS CloudHSM</td>
+                            <td>Manage single-tenant hardware security modules (HSMs) on AWS</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Inspector</td>
+                            <td>Automatically discover and scan workloads for vulnerabilities.</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon GuardDuty</td>
+                            <td>Intelligent threat detection and continuous monitoring to protect your AWS accounts and workloads.</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Resource Access Manager</td>
+                            <td>Securely share your resources across AWS accounts or within your organization.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Network Firewall</td>
+                            <td>Deploy advanced network firewall security across your VPCs</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Private Certificate Authority</td>
+                            <td>Create private certificates to identify resources and protect data.</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Cognito</td>
+                            <td>Simple and Secure User Sign-Up, Sign-In, and Access Control.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Detective</td>
+                            <td>Analyze and visualize security data to rapidly get to the root cause of potential security issues</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Verified Permissions</td>
+                            <td>Fully managed Cedar service for fine grained authorization</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS WAF</td>
+                            <td>Create security rules that control bot traffic and block common attack patterns such as SQL injection or cross-site scripting (XSS)</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Certificate Manager</td>
+                            <td>Provision and manage SSL/TLS certificates for use with AWS, hybrid, and multicloud workloads</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Payment Cryptography</td>
+                            <td>Simplify cryptography operations in your cloud-hosted payment applications</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Security Hub</td>
+                            <td>Automate AWS security checks and centralize security alerts.</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Secrets Manager</td>
+                            <td>Easily rotate, manage, and retrieve secrets through their lifecycle.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Security Lake</td>
+                            <td>Automatically centralize your security data in a few steps.</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Key Management Service</td>
+                            <td>AWS Key Management Service is a managed service that provides easy encryption with administrative controls.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS WAF Bot Control</td>
+                            <td>Protect your web applications from common and pervasive web bots</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Shield</td>
+                            <td>Protects network infrastructure from DDoS attacks</td>
+                            <td>Standard</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Management Section -->
+            <div id="mgmt" class="category-section">
+                <h2 class="category-title">Management & Governance Services</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Service Name</th>
+                            <th>Description</th>
+                            <th>Plan Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="service-name">AWS Budgets</td>
+                            <td>Improve planning and cost control with flexible budgeting and forecasting</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Resilience Hub</td>
+                            <td>A central place to define, validate, and track the resilience of applications.</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Control Tower</td>
+                            <td>The easiest way to set up and govern a new, secure multi-account AWS environment.</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Managed Service for Prometheus</td>
+                            <td>Amazon Managed Service for Prometheus is a Prometheus-compatible service that monitors and provides alerts on containerized applications.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Cost Explorer</td>
+                            <td>Visualize, understand, and manage your AWS costs and usage over time</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS CloudTrail</td>
+                            <td>Log, continuously monitor, and retain account activity related to actions across your AWS infrastructure.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Billing Conductor</td>
+                            <td>Simplify billing and reporting with customizable pricing and cost visibility</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">Amazon Managed Grafana</td>
+                            <td>Scalable and secure data visualization for your operational metrics, logs, and traces</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Telco Network Builder</td>
+                            <td>Automate the deployment and management of your telco networks on AWS</td>
+                            <td><span class="paid-badge">PAID</span></td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Resource Explorer</td>
+                            <td>Use AWS Resource Explorer to easily search for and discover your resources across AWS Regions.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Organizations</td>
+                            <td>Centrally manage billing; control access, compliance and security; and share resources across your AWS accounts.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS Service Catalog</td>
+                            <td>Create and manage catalogs of IT services that are approved for use on AWS.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS re:Post</td>
+                            <td>A community-driven, questions-and-answers service to help AWS customers remove technical roadblocks.</td>
+                            <td>Standard</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- DevTools Section -->
+            <div id="devtools" class="category-section">
+                <h2 class="category-title">Developer Tools</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Service Name</th>
+                            <th>Description</th>
+                            <th>Plan Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="service-name">AWS CloudShell</td>
+                            <td>Explore and manage AWS resources from a terminal in your browser</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS CodeBuild</td>
+                            <td>Fully managed build service that builds and tests code in the cloud.</td>
+                            <td>Standard</td>
+                        </tr>
+                        <tr>
+                            <td class="service-name">AWS X-Ray</td>
+                            <td>Analyze and debug your applications.</td>
+                            <td>Standard
+
+
+
+                            echo "# doc_feature" >> README.md
