@@ -3,93 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AWS Services Carousel</title>
+    <title>AWS Services List</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
+            margin: 20px;
             background-color: #f5f5f5;
         }
         
-        .carousel-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-        
-        .carousel-header {
-            background-color: #232f3e;
-            color: white;
-            padding: 20px;
+        h1 {
+            color: #232f3e;
             text-align: center;
+            margin-bottom: 30px;
         }
         
-        .carousel-nav {
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .filter-row {
             display: flex;
-            justify-content: center;
-            background-color: #e7e7e7;
-            padding: 10px;
+            gap: 10px;
+            margin-bottom: 10px;
             flex-wrap: wrap;
         }
         
-        .nav-btn {
-            background-color: #fff;
-            border: 1px solid #ccc;
-            padding: 8px 16px;
-            margin: 2px;
-            cursor: pointer;
-            border-radius: 4px;
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
         }
         
-        .nav-btn:hover {
-            background-color: #f0f0f0;
-        }
-        
-        .nav-btn.active {
-            background-color: #232f3e;
-            color: white;
-        }
-        
-        .carousel-content {
-            padding: 20px;
-        }
-        
-        .category-section {
-            display: none;
-        }
-        
-        .category-section.active {
-            display: block;
-        }
-        
-        .category-title {
+        .filter-group label {
+            font-weight: bold;
             color: #232f3e;
-            border-bottom: 2px solid #ff9900;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            font-size: 12px;
+        }
+        
+        .filter-group input, .filter-group select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-width: 150px;
+        }
+        
+        .clear-filters {
+            background-color: #ff9900;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        
+        .clear-filters:hover {
+            background-color: #e88500;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
         
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 30px;
+            font-size: 14px;
         }
         
         th {
             background-color: #232f3e;
             color: white;
-            padding: 12px;
+            padding: 15px 8px;
             text-align: left;
-            border: 1px solid #ddd;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            font-weight: bold;
+        }
+        
+        th:hover {
+            background-color: #1a252f;
+        }
+        
+        th::after {
+            content: ' ↕';
+            opacity: 0.5;
+            font-size: 12px;
+        }
+        
+        th.sort-asc::after {
+            content: ' ↑';
+            opacity: 1;
+            color: #ff9900;
+        }
+        
+        th.sort-desc::after {
+            content: ' ↓';
+            opacity: 1;
+            color: #ff9900;
         }
         
         td {
-            padding: 12px;
-            border: 1px solid #ddd;
+            padding: 12px 8px;
+            border-bottom: 1px solid #eee;
             vertical-align: top;
         }
         
@@ -97,607 +122,435 @@
             background-color: #f9f9f9;
         }
         
-        .paid-badge {
-            background-color: #ff9900;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 10px;
+        tr:hover {
+            background-color: #fff3cd;
+        }
+        
+        .plan-standard {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
             font-weight: bold;
         }
         
-        .service-name {
+        .plan-paid {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .results-count {
+            margin: 10px 0;
             font-weight: bold;
             color: #232f3e;
+        }
+        
+        @media (max-width: 768px) {
+            .filter-row {
+                flex-direction: column;
+            }
+            
+            .filter-group input, .filter-group select {
+                min-width: 100%;
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            th, td {
+                padding: 8px 4px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="carousel-container">
-        <div class="carousel-header">
-            <h1>AWS Services Overview</h1>
-            <p>Browse AWS services organized by category</p>
+    <h1>AWS Services Complete List</h1>
+    
+    <div class="controls">
+        <div class="filter-row">
+            <div class="filter-group">
+                <label for="serviceFilter">Service Name</label>
+                <input type="text" id="serviceFilter" placeholder="Filter by service name...">
+            </div>
+            <div class="filter-group">
+                <label for="descriptionFilter">Description</label>
+                <input type="text" id="descriptionFilter" placeholder="Filter by description...">
+            </div>
+            <div class="filter-group">
+                <label for="categoryFilter">Category</label>
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="planFilter">Plan Type</label>
+                <select id="planFilter">
+                    <option value="">All Plans</option>
+                    <option value="Standard">Standard</option>
+                    <option value="Paid">Paid</option>
+                </select>
+            </div>
         </div>
+        <button class="clear-filters" onclick="clearAllFilters()">Clear All Filters</button>
+        <div class="results-count" id="resultsCount"></div>
+    </div>
+    
+    <div class="table-container">
+        <table id="servicesTable">
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0)">Serial Number</th>
+                    <th onclick="sortTable(1)">Service Name</th>
+                    <th onclick="sortTable(2)">Description</th>
+                    <th onclick="sortTable(3)">Category</th>
+                    <th onclick="sortTable(4)">Plan Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>1</td><td>Amazon EC2</td><td>Resizable compute capacity in the Cloud.</td><td>Compute</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>2</td><td>Amazon S3</td><td>Secure, durable, and scalable object storage infrastructure.</td><td>Storage</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>3</td><td>Amazon RDS</td><td>Managed Relational Database Service for MySQL, PostgreSQL, MariaDB, or SQL Server.</td><td>Databases</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>4</td><td>Amazon DynamoDB</td><td>Serverless, NoSQL, fully managed database with single-digit millisecond performance at any scale.</td><td>Databases</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>5</td><td>AWS Lambda</td><td>Run code without thinking about servers or clusters</td><td>Compute</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>6</td><td>Amazon Bedrock</td><td>The easiest way to build and scale generative AI applications with foundation models</td><td>AI</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>7</td><td>Amazon SageMaker AI</td><td>Machine learning for every data scientist and developer.</td><td>AI-ML</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>8</td><td>Amazon Aurora DSQL</td><td>Fastest serverless distributed SQL database for always available applications</td><td>Databases</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>9</td><td>Amazon Lex</td><td>Build bots with Conversational AI.</td><td>AI</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>10</td><td>AWS Backup</td><td>Centrally manage and automate data protection</td><td>Storage</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>11</td><td>Amazon Kendra</td><td>Intelligent search service powered by machine learning</td><td>AI</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>12</td><td>Amazon ElastiCache</td><td>Real-time performance for real-time applications</td><td>Databases</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>13</td><td>Amazon Virtual Private Cloud</td><td>Define and launch AWS resources in a logically isolated virtual network</td><td>Network</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>14</td><td>Amazon Fraud Detector</td><td>Detect online fraud faster with machine learning</td><td>AI-ML</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>15</td><td>AWS Budgets</td><td>Improve planning and cost control with flexible budgeting and forecasting</td><td>Mgmt-Govern</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>16</td><td>AWS IAM Access Analyzer</td><td>Streamline your journey toward least privilege</td><td>Security-Identity-Compliance</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>17</td><td>AWS CloudHSM</td><td>Manage single-tenant hardware security modules (HSMs) on AWS</td><td>Security-Identity-Compliance</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>18</td><td>AWS CloudShell</td><td>Explore and manage AWS resources from a terminal in your browser</td><td>DevTools</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>19</td><td>AWS Amplify Hosting</td><td>Fast, secure, and reliable hosting for modern web apps, powered by AWS Amplify.</td><td>Mobile</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>20</td><td>Amazon Braket</td><td>Amazon Braket is a fully managed quantum computing service that offers access to different types of quantum computing hardware.</td><td>Quantum-Technologies</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>21</td><td>Amazon Inspector</td><td>Automatically discover and scan workloads for vulnerabilities.</td><td>Security-Identity-Compliance</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>22</td><td>AWS Resilience Hub</td><td>A central place to define, validate, and track the resilience of applications.</td><td>Mgmt-Govern</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>23</td><td>AWS Elastic Disaster Recovery</td><td>Scalable, cost-effective application recovery to AWS</td><td>Storage</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>24</td><td>Amazon DevOps Guru</td><td>ML-powered cloud operations service to improve application availability</td><td>AI</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>25</td><td>Amazon MQ</td><td>Amazon MQ is a fully managed service for open source message brokers.</td><td>App-Integration</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>26</td><td>AWS Control Tower</td><td>The easiest way to set up and govern a new, secure multi-account AWS environment.</td><td>Mgmt-Govern</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>27</td><td>AWS Elemental MediaTailor</td><td>Linear channel assembly and personalized ad-insertion service</td><td>Media-Services</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>28</td><td>Amazon AppFlow</td><td>Automate data flows between software as a service (SaaS) and AWS services</td><td>Analytics</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>29</td><td>AWS Outposts Family</td><td>Run AWS infrastructure and services on premises for a truly consistent hybrid experience</td><td>Compute</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>30</td><td>Amazon SageMaker Data Processing</td><td>Analyze, prepare, and integrate data for analytics and AI at any scale</td><td>Analytics</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>31</td><td>Amazon Managed Service for Prometheus</td><td>Amazon Managed Service for Prometheus is a Prometheus-compatible service that monitors and provides alerts on containerized applications.</td><td>Mgmt-Govern</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>32</td><td>AWS IoT Greengrass</td><td>Local compute, messaging, data caching, and sync capabilities for connected devices.</td><td>IOT</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>33</td><td>AWS IoT FleetWise</td><td>Unlock the value of vehicle data</td><td>IOT</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>34</td><td>AWS Mainframe Modernization</td><td>Modernize, migrate, run, test, and operate mainframe applications</td><td>Migration</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>35</td><td>Amazon Textract</td><td>Textract automatically extracts text and data from scanned documents, forms, and tables.</td><td>AI</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>36</td><td>Amazon GuardDuty</td><td>Intelligent threat detection and continuous monitoring to protect your AWS accounts and workloads.</td><td>Security-Identity-Compliance</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>37</td><td>Amazon SageMaker Lakehouse</td><td>Simplify analytics and AI with a unified, open, and secure data architecture</td><td>Analytics</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>38</td><td>AWS HealthOmics</td><td>Transform genomic, transcriptomic, and other omics data into insights.</td><td>AI-ML</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>39</td><td>Amazon AppStream 2.0</td><td>Secure, reliable, and scalable application streaming</td><td>EUC</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>40</td><td>Amazon Elastic Block Storage</td><td>Persistent, durable, low-latency block-level storage volumes for EC2 instances.</td><td>Storage</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>41</td><td>AWS Resource Access Manager</td><td>Securely share your resources across AWS accounts or within your organization.</td><td>Security-Identity-Compliance</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>42</td><td>Amazon WorkSpaces Pools</td><td>Create pools of virtual desktops to simplify management and reduce cost</td><td>EUC</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>43</td><td>AWS Cost Explorer</td><td>Visualize, understand, and manage your AWS costs and usage over time</td><td>Mgmt-Govern</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>44</td><td>AWS Direct Connect</td><td>Create a dedicated network connection to AWS</td><td>Network</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>45</td><td>AWS Cloud Map</td><td>Service discovery for cloud resources</td><td>Network</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>46</td><td>AWS CloudTrail</td><td>Log, continuously monitor, and retain account activity related to actions across your AWS infrastructure.</td><td>Mgmt-Govern</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>47</td><td>Amazon WorkSpaces Secure Browser</td><td>Fully managed, remote enterprise browser</td><td>EUC</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>48</td><td>AWS AppSync</td><td>Connect apps to data and events with secure, serverless, and performant GraphQL and Pub/Sub APIs</td><td>Mobile</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>49</td><td>AWS CodeBuild</td><td>Fully managed build service that builds and tests code in the cloud.</td><td>DevTools</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>50</td><td>Amazon Managed Blockchain</td><td>Build on blockchain with reliable APIs and without specialized infrastructure</td><td>Blockchain</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>51</td><td>Amazon Augmented AI</td><td>Amazon Augmented AI (Amazon A2I) makes it easy to build the workflows required for human review of ML predictions.</td><td>AI-ML</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>52</td><td>AWS X-Ray</td><td>Analyze and debug your applications.</td><td>DevTools</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>53</td><td>AWS Network Firewall</td><td>Deploy advanced network firewall security across your VPCs</td><td>Security-Identity-Compliance</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>54</td><td>AWS Wickr</td><td>Secure communication with end-to-end encryption</td><td>Business-Productivity</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>55</td><td>Amazon Q Business</td><td>Unleash the power of generative AI in the workplace with Amazon Q Business</td><td>DevTools</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>56</td><td>Amazon SWF</td><td>Task coordination and state management service for Cloud applications.</td><td>App-Integration</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>57</td><td>AWS Clean Rooms</td><td>Create clean rooms in minutes. Collaborate with your partners without sharing raw data</td><td>Analytics</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>58</td><td>Amazon FSx</td><td>Launch, run, and scale feature-rich and highly-performant file systems with just a few clicks</td><td>Storage</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>59</td><td>Amazon Location Service</td><td>Securely and easily add location data to applications</td><td>Mobile</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>60</td><td>Amazon Elastic Container Service</td><td>Run highly secure, reliable, and scalable containers</td><td>Compute</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>61</td><td>Amazon Route 53</td><td>Amazon Route 53 is a highly available and scalable cloud Domain Name System (DNS) web service.</td><td>Network</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>62</td><td>AWS Lake Formation</td><td>Centrally govern, secure, and share data for analytics and machine learning</td><td>Analytics</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>63</td><td>AWS Private Certificate Authority</td><td>Create private certificates to identify resources and protect data.</td><td>Security-Identity-Compliance</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>64</td><td>Amazon SimpleDB</td><td>Amazon SimpleDB is a highly available NoSQL data store that offloads the work of database administration.</td><td>Databases</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>65</td><td>Amazon Managed Service for Apache Flink</td><td>Build and run fully managed Apache Flink applications</td><td>Analytics</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>66</td><td>Amazon Cognito</td><td>Simple and Secure User Sign-Up, Sign-In, and Access Control.</td><td>Security-Identity-Compliance</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>67</td><td>Amazon Comprehend Medical</td><td>A natural language processing service that makes it easy to use machine learning to extract relevant medical information from unstructured text.</td><td>AI-ML</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>68</td><td>AWS Service Catalog</td><td>Create and manage catalogs of IT services that are approved for use on AWS.</td><td>Mgmt-Govern</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>69</td><td>Amazon DataZone</td><td>Unlock data across organizational boundaries with built-in governance capabilities</td><td>Analytics</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>70</td><td>Amazon EFS</td><td>Simple, scalable, shared file storage service for Amazon EC2 instances.</td><td>Storage</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>71</td><td>Amazon Detective</td><td>Analyze and visualize security data to rapidly get to the root cause of potential security issues</td><td>Security-Identity-Compliance</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>72</td><td>AWS SimSpace Weaver</td><td>Build dynamic, large-scale spatial simulations on AWS managed infrastructure</td><td>Compute</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>73</td><td>Amazon Elastic Kubernetes Service (EKS)</td><td>Start, run, and scale Kubernetes without thinking about cluster management</td><td>Containers</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>74</td><td>Amazon Connect</td><td>Transform your customer experience (CX) at scale with Amazon Connect, AWS's AI-powered contact center</td><td>Customer-Engage</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>75</td><td>Amazon DocumentDB (with MongoDB compatibility)</td><td>Amazon DocumentDB is a scalable, highly durable, and fully managed database service for operating mission-critical MongoDB workloads.</td><td>Databases</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>76</td><td>Amazon CloudWatch</td><td>Monitoring for AWS cloud resources and applications.</td><td>DevTools</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>77</td><td>Amazon Lookout for Vision</td><td>Spot product defects using computer vision to automate quality inspection</td><td>AI-ML</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>78</td><td>Amazon WorkSpaces Thin Client</td><td>Reduces end-user computing costs and simplifies device logistics by shipping directly from Amazon fulfillment centers</td><td>EUC</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>79</td><td>Amazon Verified Permissions</td><td>Fully managed Cedar service for fine grained authorization</td><td>Security-Identity-Compliance</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>80</td><td>AWS Elemental MediaLive</td><td>Encode live video for broadcast and streaming to any device</td><td>Media-Services</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>81</td><td>Amazon Athena</td><td>Analyze petabyte-scale data where it lives with ease and flexibility</td><td>Analytics</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>82</td><td>AWS Transfer Family</td><td>Easily manage and share data with simple, secure, and scalable file transfers</td><td>Migration</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>83</td><td>AWS AppFabric</td><td>AWS AppFabric connects SaaS applications for better productivity and security.</td><td>Business-Productivity</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>84</td><td>AWS HealthScribe</td><td>AWS HealthScribe is a HIPAA-eligible service empowering healthcare software vendors to build clinical applications that automatically generate clinical notes by analyzing patient-clinician conversations.</td><td>AI-ML</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>85</td><td>Amazon Managed Workflows for Apache Airflow (MWAA)</td><td>Secure and highly available managed workflow orchestration for Apache Airflow</td><td>App-Integration</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>86</td><td>AWS Organizations</td><td>Centrally manage billing; control access, compliance and security; and share resources across your AWS accounts.</td><td>Mgmt-Govern</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>87</td><td>Amazon Rekognition</td><td>Deep learning-based image recognition service.</td><td>AI-ML</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>88</td><td>AWS Data Exchange</td><td>Easily find and use third-party data sets delivered via APIs, files, or Amazon Redshift tables.</td><td>Analytics</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>89</td><td>AWS Fault Injection Service (FIS)</td><td>Improve resilience and performance with controlled experiments</td><td>DevTools</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>90</td><td>AWS Entity Resolution</td><td>Easy-to-configure, Machine Learning-powered entity resolution service</td><td>AI-ML</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>91</td><td>AWS WAF</td><td>Create security rules that control bot traffic and block common attack patterns such as SQL injection or cross-site scripting (XSS)</td><td>Security-Identity-Compliance</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>92</td><td>AWS Step Functions</td><td>Coordinate components of distributed applications.</td><td>App-Integration</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>93</td><td>AWS Batch</td><td>Batch processing for Machine Learning model training, simulation, and analysis at any scale</td><td>Compute</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>94</td><td>Amazon QuickSight</td><td>Unified business intelligence at hyperscale.</td><td>Analytics</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>95</td><td>AWS DataSync</td><td>Simplify and accelerate secure data migrations</td><td>Migration</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>96</td><td>Amazon Comprehend</td><td>Continuously trained and fully managed natural language processing (NLP).</td><td>AI-ML</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>97</td><td>Amazon Kinesis Video Streams</td><td>Capture, process, and store media streams for playback, analytics, and machine learning</td><td>Analytics</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>98</td><td>AWS IoT Device Defender</td><td>Security management across your IoT devices and fleets</td><td>IOT</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>99</td><td>Elastic Load Balancing</td><td>Automatic distribution of incoming application traffic across multiple Amazon EC2 instances.</td><td>Compute</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>100</td><td>Amazon Neptune</td><td>High-performance graph analytics and serverless database for superior scalability and availability</td><td>Databases</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>101</td><td>Amazon WorkSpaces Core</td><td>Cost-effective, simple, flexible cloud desktop infrastructure and APIs for VDI software from Citrix, Omnissa, Workspot, and Leostream</td><td>EUC</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>102</td><td>AWS Elemental MediaPackage</td><td>Prepare and protect video for internet delivery</td><td>Media-Services</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>103</td><td>Amazon Timestream</td><td>Easy-to-manage time-series databases optimized for security, performance, availability, and scalability</td><td>Databases</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>104</td><td>AWS Supply Chain</td><td>Mitigate risks and lower costs with an ML-powered supply chain application</td><td>AI-ML</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>105</td><td>Amazon Polly</td><td>Turn text into lifelike speech.</td><td>AI</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>106</td><td>Amazon Transcribe</td><td>Add speech-to-text capability to your applications with automatic speech recognition.</td><td>AI</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>107</td><td>Amazon Lightsail</td><td>Virtual Private Servers made easy! Everything you need to jumpstart your project on AWS with compute, storage, and networking.</td><td>Compute</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>108</td><td>Amazon Interactive Video Service</td><td>Fully managed service that makes it easy to set up live, interactive video streams in just a few minutes.</td><td>Media-Services</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>109</td><td>Amazon SNS</td><td>Fast, flexible, fully managed push messaging service.</td><td>Business-Productivity</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>110</td><td>AWS Billing Conductor</td><td>Simplify billing and reporting with customizable pricing and cost visibility</td><td>Mgmt-Govern</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>111</td><td>Amazon CloudFront</td><td>Web service to distribute content to end users with low latency and high transfer speeds.</td><td>Network</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>112</td><td>AWS Certificate Manager</td><td>Provision and manage SSL/TLS certificates for use with AWS, hybrid, and multicloud workloads</td><td>Security-Identity-Compliance</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>113</td><td>AWS Payment Cryptography</td><td>Simplify cryptography operations in your cloud-hosted payment applications</td><td>Security-Identity-Compliance</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>114</td><td>AWS Ground Station</td><td>Easily control satellites and ingest data with fully managed Ground Station as a service</td><td>Satellite</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>115</td><td>Amazon SES</td><td>Cost-effective email service in the Cloud</td><td>Customer-Engage</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>116</td><td>AWS re:Post</td><td>A community-driven, questions-and-answers service to help AWS customers remove technical roadblocks.</td><td>Mgmt-Govern</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>117</td><td>AWS Security Hub</td><td>Automate AWS security checks and centralize security alerts.</td><td>Security-Identity-Compliance</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>118</td><td>Amazon Managed Grafana</td><td>Scalable and secure data visualization for your operational metrics, logs, and traces</td><td>Mgmt-Govern</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>119</td><td>AWS Secrets Manager</td><td>Easily rotate, manage, and retrieve secrets through their lifecycle.</td><td>Security-Identity-Compliance</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>120</td><td>Amazon Elastic Transcoder</td><td>Fully managed media transcoding service</td><td>Media-Services</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>121</td><td>Amazon Security Lake</td><td>Automatically centralize your security data in a few steps.</td><td>Security-Identity-Compliance</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>122</td><td>AWS Migration Hub</td><td>Migration Hub is a single location to track the progress of application migrations</td><td>Migration</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>123</td><td>Amazon Managed Streaming for Apache Kafka (MSK)</td><td>Securely stream data with a fully managed, highly available Apache Kafka service</td><td>Analytics</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>124</td><td>AWS Global Accelerator</td><td>Improve application availability, performance, and security using the AWS global network</td><td>Network</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>125</td><td>Amazon Deadline Cloud</td><td>Set up, deploy, and scale a fully managed cloud render farm in minutes</td><td>Media-Services</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>126</td><td>AWS End User Messaging</td><td>Dependable, cost-effective messaging without compromising safety, security, or results</td><td>Business-Productivity</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>127</td><td>Amazon Elastic Container Registry</td><td>Store and retrieve Docker images.</td><td>Compute</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>128</td><td>AWS Database Migration Service</td><td>Migrate databases with minimal downtime.</td><td>Databases</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>129</td><td>Amazon GameLift</td><td>Simple, fast, cost-effective dedicated game server hosting.</td><td>Gaming</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>130</td><td>AWS B2B Data Interchange</td><td>Automate the transformation of electronic data interchange (EDI) documents</td><td>Compute</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>131</td><td>Amazon Keyspaces (for Apache Cassandra)</td><td>A scalable, highly available, and managed Apache Cassandra–compatible database service</td><td>Databases</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>132</td><td>AWS HealthLake</td><td>Securely store, transform, transact, and analyze health data in minutes</td><td>AI-ML</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>133</td><td>AWS Key Management Service</td><td>AWS Key Management Service is a managed service that provides easy encryption with administrative controls.</td><td>Security-Identity-Compliance</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>134</td><td>AWS Telco Network Builder</td><td>Automate the deployment and management of your telco networks on AWS</td><td>Mgmt-Govern</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>135</td><td>AWS Elastic Beanstalk</td><td>Easily migrate, deploy, and scale full-stack applications on AWS</td><td>Compute</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>136</td><td>Amazon OpenSearch Service</td><td>Managed service that makes it easy to perform interactive log analytics, real-time application monitoring, website search, and more.</td><td>Analytics</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>137</td><td>Amazon WorkSpaces Personal</td><td>Optimize costs and deliver a configurable, personalized end-user experience</td><td>EUC</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>138</td><td>AWS WAF Bot Control</td><td>Protect your web applications from common and pervasive web bots</td><td>Security-Identity-Compliance</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>139</td><td>AWS Cloud Control API</td><td>Manage cloud infrastructure with a consistent set of APIs</td><td>DevTools</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>140</td><td>AWS Resource Explorer</td><td>Use AWS Resource Explorer to easily search for and discover your resources across AWS Regions.</td><td>Mgmt-Govern</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>141</td><td>AWS Glue</td><td>Simple, flexible, and cost-effective extract, transform, and load (ETL) service.</td><td>Analytics</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>142</td><td>Amazon ECS Anywhere</td><td>Easily run and manage containers on any customer-managed infrastructure</td><td>Storage</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>143</td><td>Amazon Redshift</td><td>Power data driven decisions with the best price-performance cloud data warehouse</td><td>Analytics</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>144</td><td>AWS Shield</td><td>Protects networks and applications by analyzing network security configurations and providing managed DDoS protection</td><td>Security-Identity-Compliance</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>145</td><td>Amazon Personalize</td><td>Elevate the customer experience with ML-powered personalization</td><td>AI</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>146</td><td>AWS App Studio</td><td>The fastest and easiest way to build enterprise-grade applications.</td><td>AI</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>147</td><td>AWS CodePipeline</td><td>Continuous delivery service for fast and reliable application updates.</td><td>DevTools</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>148</td><td>AWS Application Migration Service</td><td>Simplify and expedite migrations while reducing cost.</td><td>Migration</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>149</td><td>AWS IoT TwinMaker</td><td>Optimize operations by easily creating digital twins of real-world systems</td><td>IOT</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>150</td><td>Amazon API Gateway</td><td>Publish, maintain, monitor, and secure APIs at any scale.</td><td>Mobile</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>151</td><td>AWS Config</td><td>Assess, audit, and evaluate configurations of your resources</td><td>Mgmt-Govern</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>152</td><td>Amazon SageMaker Ground Truth</td><td>Build highly-accurate training datasets quickly, while reducing data labeling costs by up to 70%.</td><td>AI-ML</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>153</td><td>Amazon DynamoDB Accelerator (DAX)</td><td>Caching service purpose-built for DynamoDB compatibility</td><td>Databases</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>154</td><td>AWS Elemental MediaConnect</td><td>Secure, reliable live video transport</td><td>Media-Services</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>155</td><td>Amazon Elastic Map Reduce (EMR)</td><td>Easily run and scale Apache Spark, Trino, and other big data workloads</td><td>Analytics</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>156</td><td>Amazon Q Developer</td><td>The most capable generative AI–powered assistant for software development</td><td>DevTools</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>157</td><td>Migration Evaluator</td><td>Migration Evaluator helps customers rapidly see projected costs of running their on-premises estate in AWS.</td><td>Migration</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>158</td><td>AWS Systems Manager</td><td>Centralize operational data from multiple AWS services and automate tasks across your AWS resources.</td><td>Mgmt-Govern</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>159</td><td>Amazon EventBridge</td><td>Build event-driven applications at scale across AWS, existing systems, or SaaS applications</td><td>Serverless</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>160</td><td>AWS Device Farm</td><td>Test your iOS, Android and FireOS apps on real devices in the AWS cloud.</td><td>Mobile</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>161</td><td>AWS Elemental MediaConvert</td><td>Process video files to prepare on-demand content for distribution or archiving</td><td>Media-Services</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>162</td><td>Amazon EKS Anywhere</td><td>Create and operate Kubernetes clusters on your own infrastructure</td><td>Containers</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>163</td><td>AWS IoT SiteWise</td><td>Collect, organize, and analyze data from industrial equipment at scale</td><td>IOT</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>164</td><td>AWS Elemental MediaStore</td><td>Store and deliver video assets for live streaming media workflows</td><td>Media-Services</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>165</td><td>AWS HealthImaging</td><td>AWS HealthImaging is designed for builders who are developing cloud-native medical imaging applications. HealthImaging ingests data in the DICOM P10 format, provides APIs for low-latency retrieval, and purpose-built storage.</td><td>AI-ML</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>166</td><td>Amazon MemoryDB</td><td>Valkey- and Redis OSS-compatible, durable, in-memory database service for ultra-fast performance.</td><td>Databases</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>167</td><td>AWS IoT Device Management</td><td>Onboard, organize, monitor, and remotely manage connected devices at scale.</td><td>IOT</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>168</td><td>AWS Storage Gateway</td><td>Hybrid cloud storage with seamless local integration and optimized data transfer.</td><td>Storage</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>169</td><td>AWS IoT Events</td><td>AWS IoT Events is a fully managed IoT service that makes it easy to detect and respond to events from IoT sensors and applications.</td><td>IOT</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>170</td><td>AWS Application Discovery Service</td><td>Collects server specification information, performance data, and details of running processes and network connections.</td><td>Migration</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>171</td><td>Amazon Lookout for Equipment</td><td>Avoid unplanned downtime by automatically detecting abnormal equipment behavior</td><td>AI-ML</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>172</td><td>AWS CodeArtifact</td><td>Secure, scalable, and cost-effective package management for software development</td><td>DevTools</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>173</td><td>Amazon Application Recovery Controller</td><td>Simplify and automate recovery for highly available applications</td><td>Network</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>174</td><td>Amazon WorkMail</td><td>Secure, managed business email and calendar service with support for existing desktop and mobile email client applications</td><td>Business-Productivity</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>175</td><td>Amazon SQS</td><td>Scalable queue for storing messages as they travel between computers.</td><td>App-Integration</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>176</td><td>AWS Compute Optimizer</td><td>Get recommendations to optimize the performance and cost of your AWS resources</td><td>Mgmt-Govern</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>177</td><td>AWS IoT Core</td><td>Connect devices to the cloud.</td><td>IOT</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>178</td><td>Amazon FinSpace</td><td>Easy to manage high-performance time-series database and analytics for Capital Markets</td><td>Analytics</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>179</td><td>AWS Cloud WAN</td><td>Build, manage, and monitor global wide area networks</td><td>Network</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>180</td><td>Amazon Data Firehose</td><td>Reliably load real-time streams into data lakes, warehouses, and analytics services</td><td>Analytics</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>181</td><td>AWS CloudFormation</td><td>Model and provision all your cloud infrastructure resources with code to enable configuration compliance and faster troubleshooting.</td><td>Mgmt-Govern</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>182</td><td>AWS License Manager</td><td>Set rules to manage, discover, and report third-party license usage proactively.</td><td>Mgmt-Govern</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>183</td><td>AWS Audit Manager</td><td>Continuously audit your AWS usage to simplify how you assess risk and compliance</td><td>Security-Identity-Compliance</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>184</td><td>Amazon Macie</td><td>Automated sensitive data discovery and evaluation of your Amazon S3 security posture.</td><td>Security-Identity-Compliance</td><td><span class="plan-paid">Paid</span></td></tr>
+                <tr><td>185</td><td>Amazon CodeCatalyst</td><td>Quickly build and deliver apps at scale on AWS</td><td>App-Integration</td><td><span class="plan-standard">Standard</span></td></tr>
+                <tr><td>186</td><td>AWS Firewall Manager</td><td>Centrally configure and manage firewall rules across your accounts</td><td>Security-Identity-Compliance</td><td><span class="plan-paid">Paid</span></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let currentSort = { column: -1, direction: 'asc' };
+        let allRows = [];
         
-        <div class="carousel-nav">
-            <button class="nav-btn active" onclick="showCategory('compute')">Compute</button>
-            <button class="nav-btn" onclick="showCategory('storage')">Storage</button>
-            <button class="nav-btn" onclick="showCategory('databases')">Databases</button>
-            <button class="nav-btn" onclick="showCategory('ai')">AI & ML</button>
-            <button class="nav-btn" onclick="showCategory('network')">Network</button>
-            <button class="nav-btn" onclick="showCategory('security')">Security</button>
-            <button class="nav-btn" onclick="showCategory('mgmt')">Management</button>
-            <button class="nav-btn" onclick="showCategory('devtools')">DevTools</button>
-            <button class="nav-btn" onclick="showCategory('analytics')">Analytics</button>
-            <button class="nav-btn" onclick="showCategory('mobile')">Mobile</button>
-            <button class="nav-btn" onclick="showCategory('other')">Other</button>
-        </div>
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            const table = document.getElementById('servicesTable');
+            const tbody = table.querySelector('tbody');
+            allRows = Array.from(tbody.querySelectorAll('tr'));
+            
+            populateCategoryFilter();
+            updateResultsCount();
+            
+            // Add event listeners for filters
+            document.getElementById('serviceFilter').addEventListener('input', applyFilters);
+            document.getElementById('descriptionFilter').addEventListener('input', applyFilters);
+            document.getElementById('categoryFilter').addEventListener('change', applyFilters);
+            document.getElementById('planFilter').addEventListener('change', applyFilters);
+        });
         
-        <div class="carousel-content">
-            <!-- Compute Section -->
-            <div id="compute" class="category-section active">
-                <h2 class="category-title">Compute Services</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Service Name</th>
-                            <th>Description</th>
-                            <th>Plan Type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="service-name">Amazon EC2</td>
-                            <td>Resizable compute capacity in the Cloud.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Lambda</td>
-                            <td>Run code without thinking about servers or clusters</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Outposts Family</td>
-                            <td>Run AWS infrastructure and services on premises for a truly consistent hybrid experience</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS SimSpace Weaver</td>
-                            <td>Build dynamic, large-scale spatial simulations on AWS managed infrastructure</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Elastic Container Service</td>
-                            <td>Run highly secure, reliable, and scalable containers</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Batch</td>
-                            <td>Batch processing for Machine Learning model training, simulation, and analysis at any scale</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Elastic Load Balancing</td>
-                            <td>Automatic distribution of incoming application traffic across multiple Amazon EC2 instances.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Lightsail</td>
-                            <td>Virtual Private Servers made easy! Everything you need to jumpstart your project on AWS with compute, storage, and networking.</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Elastic Container Registry</td>
-                            <td>Store and retrieve Docker images.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS B2B Data Interchange</td>
-                            <td>Automate the transformation of electronic data interchange (EDI) documents</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Elastic Beanstalk</td>
-                            <td>Easily migrate, deploy, and scale full-stack applications on AWS</td>
-                            <td>Standard</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        function populateCategoryFilter() {
+            const categoryFilter = document.getElementById('categoryFilter');
+            const categories = new Set();
             
-            <!-- Storage Section -->
-            <div id="storage" class="category-section">
-                <h2 class="category-title">Storage Services</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Service Name</th>
-                            <th>Description</th>
-                            <th>Plan Type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="service-name">Amazon S3</td>
-                            <td>Secure, durable, and scalable object storage infrastructure.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Backup</td>
-                            <td>Centrally manage and automate data protection</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Elastic Disaster Recovery</td>
-                            <td>Scalable, cost-effective application recovery to AWS</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Elastic Block Storage</td>
-                            <td>Persistent, durable, low-latency block-level storage volumes for EC2 instances.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon FSx</td>
-                            <td>Launch, run, and scale feature-rich and highly-performant file systems with just a few clicks</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon EFS</td>
-                            <td>Simple, scalable, shared file storage service for Amazon EC2 instances.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon ECS Anywhere</td>
-                            <td>Easily run and manage containers on any customer-managed infrastructure</td>
-                            <td>Standard</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            allRows.forEach(row => {
+                const categoryCell = row.cells[3];
+                if (categoryCell) {
+                    categories.add(categoryCell.textContent.trim());
+                }
+            });
             
-            <!-- Databases Section -->
-            <div id="databases" class="category-section">
-                <h2 class="category-title">Database Services</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Service Name</th>
-                            <th>Description</th>
-                            <th>Plan Type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="service-name">Amazon RDS</td>
-                            <td>Managed Relational Database Service for MySQL, PostgreSQL, MariaDB, or SQL Server.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon DynamoDB</td>
-                            <td>Serverless, NoSQL, fully managed database with single-digit millisecond performance at any scale.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Aurora DSQL</td>
-                            <td>Fastest serverless distributed SQL database for always available applications</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon ElastiCache</td>
-                            <td>Real-time performance for real-time applications</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon SimpleDB</td>
-                            <td>Amazon SimpleDB is a highly available NoSQL data store that offloads the work of database administration.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon DocumentDB</td>
-                            <td>Amazon DocumentDB is a scalable, highly durable, and fully managed database service for operating mission-critical MongoDB workloads.</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Neptune</td>
-                            <td>High-performance graph analytics and serverless database for superior scalability and availability</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Timestream</td>
-                            <td>Easy-to-manage time-series databases optimized for security, performance, availability, and scalability</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Database Migration Service</td>
-                            <td>Migrate databases with minimal downtime.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Keyspaces</td>
-                            <td>A scalable, highly available, and managed Apache Cassandra–compatible database service</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            // Sort categories alphabetically
+            const sortedCategories = Array.from(categories).sort();
             
-            <!-- AI & ML Section -->
-            <div id="ai" class="category-section">
-                <h2 class="category-title">AI & Machine Learning Services</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Service Name</th>
-                            <th>Description</th>
-                            <th>Plan Type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="service-name">Amazon Bedrock</td>
-                            <td>The easiest way to build and scale generative AI applications with foundation models</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon SageMaker AI</td>
-                            <td>Machine learning for every data scientist and developer.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Lex</td>
-                            <td>Build bots with Conversational AI.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Kendra</td>
-                            <td>Intelligent search service powered by machine learning</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Fraud Detector</td>
-                            <td>Detect online fraud faster with machine learning</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon DevOps Guru</td>
-                            <td>ML-powered cloud operations service to improve application availability</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS HealthOmics</td>
-                            <td>Transform genomic, transcriptomic, and other omics data into insights.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Augmented AI</td>
-                            <td>Amazon Augmented AI (Amazon A2I) makes it easy to build the workflows required for human review of ML predictions.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Comprehend Medical</td>
-                            <td>A natural language processing service that makes it easy to use machine learning to extract relevant medical information from unstructured text.</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Lookout for Vision</td>
-                            <td>Spot product defects using computer vision to automate quality inspection</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS HealthScribe</td>
-                            <td>AWS HealthScribe is a HIPAA-eligible service empowering healthcare software vendors to build clinical applications that automatically generate clinical notes by analyzing patient-clinician conversations.</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Rekognition</td>
-                            <td>Deep learning-based image recognition service.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Entity Resolution</td>
-                            <td>Easy-to-configure, Machine Learning-powered entity resolution service</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Comprehend</td>
-                            <td>Continuously trained and fully managed natural language processing (NLP).</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Supply Chain</td>
-                            <td>Mitigate risks and lower costs with an ML-powered supply chain application</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Polly</td>
-                            <td>Turn text into lifelike speech.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Transcribe</td>
-                            <td>Add speech-to-text capability to your applications with automatic speech recognition.</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS HealthLake</td>
-                            <td>Securely store, transform, transact, and analyze health data in minutes</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Textract</td>
-                            <td>Textract automatically extracts text and data from scanned documents, forms, and tables.</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            sortedCategories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                categoryFilter.appendChild(option);
+            });
+        }
+        
+        function applyFilters() {
+            const serviceFilter = document.getElementById('serviceFilter').value.toLowerCase();
+            const descriptionFilter = document.getElementById('descriptionFilter').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value.toLowerCase();
+            const planFilter = document.getElementById('planFilter').value.toLowerCase();
             
-            <!-- Network Section -->
-            <div id="network" class="category-section">
-                <h2 class="category-title">Network Services</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Service Name</th>
-                            <th>Description</th>
-                            <th>Plan Type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="service-name">Amazon Virtual Private Cloud</td>
-                            <td>Define and launch AWS resources in a logically isolated virtual network</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Direct Connect</td>
-                            <td>Create a dedicated network connection to AWS</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Cloud Map</td>
-                            <td>Service discovery for cloud resources</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Route 53</td>
-                            <td>Amazon Route 53 is a highly available and scalable cloud Domain Name System (DNS) web service.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Global Accelerator</td>
-                            <td>Improve application availability, performance, and security using the AWS global network</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon CloudFront</td>
-                            <td>Web service to distribute content to end users with low latency and high transfer speeds.</td>
-                            <td>Standard</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            const tbody = document.getElementById('servicesTable').querySelector('tbody');
             
-            <!-- Security Section -->
-            <div id="security" class="category-section">
-                <h2 class="category-title">Security & Identity Services</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Service Name</th>
-                            <th>Description</th>
-                            <th>Plan Type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="service-name">AWS IAM Access Analyzer</td>
-                            <td>Streamline your journey toward least privilege</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS CloudHSM</td>
-                            <td>Manage single-tenant hardware security modules (HSMs) on AWS</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Inspector</td>
-                            <td>Automatically discover and scan workloads for vulnerabilities.</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon GuardDuty</td>
-                            <td>Intelligent threat detection and continuous monitoring to protect your AWS accounts and workloads.</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Resource Access Manager</td>
-                            <td>Securely share your resources across AWS accounts or within your organization.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Network Firewall</td>
-                            <td>Deploy advanced network firewall security across your VPCs</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Private Certificate Authority</td>
-                            <td>Create private certificates to identify resources and protect data.</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Cognito</td>
-                            <td>Simple and Secure User Sign-Up, Sign-In, and Access Control.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Detective</td>
-                            <td>Analyze and visualize security data to rapidly get to the root cause of potential security issues</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Verified Permissions</td>
-                            <td>Fully managed Cedar service for fine grained authorization</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS WAF</td>
-                            <td>Create security rules that control bot traffic and block common attack patterns such as SQL injection or cross-site scripting (XSS)</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Certificate Manager</td>
-                            <td>Provision and manage SSL/TLS certificates for use with AWS, hybrid, and multicloud workloads</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Payment Cryptography</td>
-                            <td>Simplify cryptography operations in your cloud-hosted payment applications</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Security Hub</td>
-                            <td>Automate AWS security checks and centralize security alerts.</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Secrets Manager</td>
-                            <td>Easily rotate, manage, and retrieve secrets through their lifecycle.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Security Lake</td>
-                            <td>Automatically centralize your security data in a few steps.</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Key Management Service</td>
-                            <td>AWS Key Management Service is a managed service that provides easy encryption with administrative controls.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS WAF Bot Control</td>
-                            <td>Protect your web applications from common and pervasive web bots</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Shield</td>
-                            <td>Protects network infrastructure from DDoS attacks</td>
-                            <td>Standard</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            const filteredRows = allRows.filter(row => {
+                const serviceName = row.cells[1].textContent.toLowerCase();
+                const description = row.cells[2].textContent.toLowerCase();
+                const category = row.cells[3].textContent.toLowerCase();
+                const planType = row.cells[4].textContent.toLowerCase();
+                
+                return serviceName.includes(serviceFilter) &&
+                       description.includes(descriptionFilter) &&
+                       (categoryFilter === '' || category === categoryFilter) &&
+                       (planFilter === '' || planType.includes(planFilter));
+            });
             
-            <!-- Management Section -->
-            <div id="mgmt" class="category-section">
-                <h2 class="category-title">Management & Governance Services</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Service Name</th>
-                            <th>Description</th>
-                            <th>Plan Type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="service-name">AWS Budgets</td>
-                            <td>Improve planning and cost control with flexible budgeting and forecasting</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Resilience Hub</td>
-                            <td>A central place to define, validate, and track the resilience of applications.</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Control Tower</td>
-                            <td>The easiest way to set up and govern a new, secure multi-account AWS environment.</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Managed Service for Prometheus</td>
-                            <td>Amazon Managed Service for Prometheus is a Prometheus-compatible service that monitors and provides alerts on containerized applications.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Cost Explorer</td>
-                            <td>Visualize, understand, and manage your AWS costs and usage over time</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS CloudTrail</td>
-                            <td>Log, continuously monitor, and retain account activity related to actions across your AWS infrastructure.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Billing Conductor</td>
-                            <td>Simplify billing and reporting with customizable pricing and cost visibility</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">Amazon Managed Grafana</td>
-                            <td>Scalable and secure data visualization for your operational metrics, logs, and traces</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Telco Network Builder</td>
-                            <td>Automate the deployment and management of your telco networks on AWS</td>
-                            <td><span class="paid-badge">PAID</span></td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Resource Explorer</td>
-                            <td>Use AWS Resource Explorer to easily search for and discover your resources across AWS Regions.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Organizations</td>
-                            <td>Centrally manage billing; control access, compliance and security; and share resources across your AWS accounts.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS Service Catalog</td>
-                            <td>Create and manage catalogs of IT services that are approved for use on AWS.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS re:Post</td>
-                            <td>A community-driven, questions-and-answers service to help AWS customers remove technical roadblocks.</td>
-                            <td>Standard</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            // Clear tbody and add filtered rows
+            tbody.innerHTML = '';
+            filteredRows.forEach(row => tbody.appendChild(row.cloneNode(true)));
             
-            <!-- DevTools Section -->
-            <div id="devtools" class="category-section">
-                <h2 class="category-title">Developer Tools</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Service Name</th>
-                            <th>Description</th>
-                            <th>Plan Type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="service-name">AWS CloudShell</td>
-                            <td>Explore and manage AWS resources from a terminal in your browser</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS CodeBuild</td>
-                            <td>Fully managed build service that builds and tests code in the cloud.</td>
-                            <td>Standard</td>
-                        </tr>
-                        <tr>
-                            <td class="service-name">AWS X-Ray</td>
-                            <td>Analyze and debug your applications.</td>
-                            <td>Standard
-
-
-
-                            echo "# doc_feature" >> README.md
+            updateResultsCount(filteredRows.length);
+        }
+        
+        function clearAllFilters() {
+            document.getElementById('serviceFilter').value = '';
+            document.getElementById('descriptionFilter').value = '';
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('planFilter').value = '';
+            
+            // Reset table to show all rows
+            const tbody = document.getElementById('servicesTable').querySelector('tbody');
+            tbody.innerHTML = '';
+            allRows.forEach(row => tbody.appendChild(row.cloneNode(true)));
+            
+            // Clear sort indicators
+            document.querySelectorAll('th').forEach(th => {
+                th.classList.remove('sort-asc', 'sort-desc');
+            });
+            currentSort = { column: -1, direction: 'asc' };
+            
+            updateResultsCount();
+        }
+        
+        function updateResultsCount(count = null) {
+            const resultsCount = document.getElementById('resultsCount');
+            const total = allRows.length;
+            const displayed = count !== null ? count : total;
+            resultsCount.textContent = `Showing ${displayed} of ${total} services`;
+        }
+        
+        function sortTable(columnIndex) {
+            const table = document.getElementById('servicesTable');
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            
+            // Determine sort direction
+            if (currentSort.column === columnIndex) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.direction = 'asc';
+            }
+            currentSort.column = columnIndex;
+            
+            // Update header indicators
+            document.querySelectorAll('th').forEach((th, index) => {
+                th.classList.remove('sort-asc', 'sort-desc');
+                if (index === columnIndex) {
+                    th.classList.add(currentSort.direction === 'asc' ? 'sort-asc' : 'sort-desc');
+                }
+            });
+            
+            // Sort rows
+            rows.sort((a, b) => {
+                let aValue = a.cells[columnIndex].textContent.trim();
+                let bValue = b.cells[columnIndex].textContent.trim();
+                
+                // Handle numeric sorting for Serial Number column
+                if (columnIndex === 0) {
+                    aValue = parseInt(aValue);
+                    bValue = parseInt(bValue);
+                }
+                
+                // Handle plan type column (extract text from span)
+                if (columnIndex === 4) {
+                    aValue = aValue.toLowerCase();
+                    bValue = bValue.toLowerCase();
+                }
+                
+                let comparison = 0;
+                if (aValue > bValue) {
+                    comparison = 1;
+                } else if (aValue < bValue) {
+                    comparison = -1;
+                }
+                
+                return currentSort.direction === 'asc' ? comparison : -comparison;
+            });
+            
+            // Clear tbody and add sorted rows
+            tbody.innerHTML = '';
+            rows.forEach(row => tbody.appendChild(row));
+            
+            updateResultsCount(rows.length);
+        }
+    </script>
