@@ -6,25 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AWS Services List</title>
     <style>
+        /* Light Theme (Default) */
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
-            background-color: #000000;
-            color: #ffff00;
+            background-color: #f5f5f5;
+            transition: all 0.3s ease;
         }
 
         h1 {
-            color: #ff0000;
+            color: #232f3e;
             text-align: center;
             margin-bottom: 30px;
+            transition: color 0.3s ease;
         }
 
         .controls {
-            background: #1a1a1a;
+            background: white;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 4px #00ffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
+            transition: all 0.3s ease;
         }
 
         .filter-row {
@@ -42,63 +45,66 @@
 
         .filter-group label {
             font-weight: bold;
-            color: #ffff00;
+            color: #232f3e;
             font-size: 12px;
+            transition: color 0.3s ease;
         }
 
         .filter-group input,
         .filter-group select {
             padding: 8px;
-            border: 1px solid #00ffff;
+            border: 1px solid #ddd;
             border-radius: 4px;
             min-width: 150px;
-            background-color: #000000;
-            color: #ffff00;
+            background-color: white;
+            color: #232f3e;
+            transition: all 0.3s ease;
         }
 
         .clear-filters {
-            background-color: #ff0000;
-            color: #ffff00;
+            background-color: #ff9900;
+            color: white;
             border: none;
             padding: 10px 20px;
             border-radius: 4px;
             cursor: pointer;
             margin-top: 20px;
             font-weight: bold;
+            transition: background-color 0.3s ease;
         }
 
         .clear-filters:hover {
-            background-color: #cc0000;
+            background-color: #e88500;
         }
 
-        //for upper text
         .table-container {
-            background: #000000;
+            background: white;
             border-radius: 8px;
-            box-shadow: 0 2px 4px #00ffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             overflow: hidden;
+            transition: all 0.3s ease;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             font-size: 14px;
-            color: #ffff00;
         }
 
         th {
-            background-color: #1a1a1a;
-            color: #00ffff;
+            background-color: #232f3e;
+            color: white;
             padding: 15px 8px;
             text-align: left;
             cursor: pointer;
             user-select: none;
             position: relative;
             font-weight: bold;
+            transition: background-color 0.3s ease;
         }
 
         th:hover {
-            background-color: #333333;
+            background-color: #1a252f;
         }
 
         th::after {
@@ -110,52 +116,180 @@
         th.sort-asc::after {
             content: ' ↑';
             opacity: 1;
-            color: #ff0000;
+            color: #ff9900;
         }
 
         th.sort-desc::after {
             content: ' ↓';
             opacity: 1;
-            color: #ff0000;
+            color: #ff9900;
         }
 
         td {
             padding: 12px 8px;
-            border-bottom: 1px solid #00ffff;
+            border-bottom: 1px solid #eee;
             vertical-align: top;
-            color: #ffff00;
+            color: #232f3e;
+            transition: all 0.3s ease;
         }
 
         tr:nth-child(even) {
-            background-color: #111111;
+            background-color: #f9f9f9;
+            transition: background-color 0.3s ease;
         }
 
         tr:hover {
-            background-color: #222222;
+            background-color: #fff3cd;
         }
 
         .plan-standard {
-            background-color: #003300;
-            color: #00ffff;
+            background-color: #d4edda;
+            color: #155724;
             padding: 4px 8px;
             border-radius: 4px;
             font-size: 12px;
             font-weight: bold;
+            transition: all 0.3s ease;
         }
 
         .plan-paid {
-            background-color: #330000;
-            color: #ff0000;
+            background-color: #f8d7da;
+            color: #721c24;
             padding: 4px 8px;
             border-radius: 4px;
             font-size: 12px;
             font-weight: bold;
+            transition: all 0.3s ease;
         }
 
         .results-count {
             margin: 10px 0;
             font-weight: bold;
+            color: #232f3e;
+            transition: color 0.3s ease;
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #232f3e;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle:hover {
+            background: #1a252f;
+            transform: scale(1.05);
+        }
+
+        .theme-icon {
+            font-size: 16px;
+        }
+
+        /* Dark Theme */
+        body.dark-theme {
+            background-color: #000000;
+            color: #ffff00;
+        }
+
+        body.dark-theme h1 {
+            color: #ff0000;
+        }
+
+        body.dark-theme .controls {
+            background: #1a1a1a;
+            box-shadow: 0 2px 4px #00ffff;
+        }
+
+        body.dark-theme .filter-group label {
+            color: #ffff00;
+        }
+
+        body.dark-theme .filter-group input,
+        body.dark-theme .filter-group select {
+            border: 1px solid #00ffff;
+            background-color: #000000;
+            color: #ffff00;
+        }
+
+        body.dark-theme .clear-filters {
+            background-color: #ff0000;
+            color: #ffff00;
+        }
+
+        body.dark-theme .clear-filters:hover {
+            background-color: #cc0000;
+        }
+
+        body.dark-theme .table-container {
+            background: #000000;
+            box-shadow: 0 2px 4px #00ffff;
+        }
+
+        body.dark-theme table {
+            color: #ffff00;
+        }
+
+        body.dark-theme th {
+            background-color: #1a1a1a;
             color: #00ffff;
+        }
+
+        body.dark-theme th:hover {
+            background-color: #333333;
+        }
+
+        body.dark-theme th.sort-asc::after,
+        body.dark-theme th.sort-desc::after {
+            color: #ff0000;
+        }
+
+        body.dark-theme td {
+            border-bottom: 1px solid #00ffff;
+            color: #ffff00;
+        }
+
+        body.dark-theme tr:nth-child(even) {
+            background-color: #111111;
+        }
+
+        body.dark-theme tr:hover {
+            background-color: #222222;
+        }
+
+        body.dark-theme .plan-standard {
+            background-color: #003300;
+            color: #00ffff;
+        }
+
+        body.dark-theme .plan-paid {
+            background-color: #330000;
+            color: #ff0000;
+        }
+
+        body.dark-theme .results-count {
+            color: #00ffff;
+        }
+
+        body.dark-theme .theme-toggle {
+            background: #ff0000;
+            color: #ffff00;
+        }
+
+        body.dark-theme .theme-toggle:hover {
+            background: #cc0000;
         }
 
         @media (max-width: 768px) {
@@ -176,11 +310,23 @@
             td {
                 padding: 8px 4px;
             }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                padding: 10px 16px;
+                font-size: 12px;
+            }
         }
     </style>
 </head>
 
 <body>
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <span class="theme-icon">🌙</span>
+        <span class="theme-text">Dark</span>
+    </button>
+
     <h1>AWS Services Complete List</h1>
 
     <div class="controls">
@@ -1641,6 +1787,8 @@
             updateResultsCount(filteredRows.length);
         }
 
+
+
         function clearAllFilters() {
             document.getElementById('serviceFilter').value = '';
             document.getElementById('descriptionFilter').value = '';
@@ -1667,6 +1815,37 @@
             const displayed = count !== null ? count : total;
             resultsCount.textContent = `Showing ${displayed} of ${total} services`;
         }
+
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.querySelector('.theme-icon');
+            const themeText = document.querySelector('.theme-text');
+
+            if (body.classList.contains('dark-theme')) {
+                body.classList.remove('dark-theme');
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.classList.add('dark-theme');
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Load saved theme on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.querySelector('.theme-icon');
+            const themeText = document.querySelector('.theme-text');
+
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-theme');
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light';
+            }
+        });
 
         function sortTable(columnIndex) {
             const table = document.getElementById('servicesTable');
